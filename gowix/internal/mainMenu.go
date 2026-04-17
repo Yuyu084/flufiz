@@ -5,6 +5,7 @@ import (
 	"flufiz/internal/storage"
 	"fmt"
 	"os"
+	"time"
 )
 
 type MainMenu struct {
