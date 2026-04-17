@@ -69,32 +69,41 @@ func (m *MainMenu) bar(v int) {
 }
 
 func (m *MainMenu) showMenu() {
-	fmt.Println("\n📋 МЕНЮ")
-	fmt.Println("1 🧸 Отметить настроение")
-	fmt.Println("2 💧 Выпить воды")
-	fmt.Println("3 💌 Поддержка от питомца")
-	fmt.Println("4 📊 Статистика")
-	fmt.Println("5 🚪 Выйти")
-	fmt.Print("\n👉 ")
+fmt.Println("\n📋 МЕНЮ")
+fmt.Println("1 🧸 Отметить настроение")
+fmt.Println("2 💧 Выпить воды")
+fmt.Println("3 💌 Поддержка от питомца")
+fmt.Println("4 🎮 Играть с питомцем")
+fmt.Println("5 📊 Статистика")
+fmt.Println("6 🚪 Выйти")
+fmt.Print("\n👉 ")
 }
-
 func (m *MainMenu) input() {
-	var n int
-	fmt.Scan(&n)
+var n int
+fmt.Scan(&n)
 
-	if n == 1 {
-		m.mood()
-	} else if n == 2 {
-		m.water()
-	} else if n == 3 {
-		m.support()
-	} else if n == 4 {
-		m.stats()
-	} else if n == 5 {
-		m.exit()
-	}
+if n == 1 {
+m.mood()
+m.wait()
+} else if n == 2 {
+m.water()
+m.wait()
+} else if n == 3 {
+m.support()
+m.wait()
+} else if n == 4 {
+m.playGame()
+m.wait()
+} else if n == 5 {
+m.stats()
+m.wait()
+} else if n == 6 {
+m.exit()
+} else {
+fmt.Println("\n❌ Ошибка ввода! Введи число от 1 до 6")
+m.wait()
 }
-
+}
 func (m *MainMenu) mood() {
 	fmt.Println("\n😊 Как твоё настроение?")
 	fmt.Println("1 - (⁎˃ᴗ˂⁎) ")
@@ -145,35 +154,36 @@ func (m *MainMenu) water() {
 }
 
 func (m *MainMenu) support() {
-	fmt.Println("\n💌 Питомец говорит тебе:")
+fmt.Println("\n💌 Питомец говорит тебе:")
 
-	// Разные сообщения поддержки
-	messages := []string{
-		"Ты справишься! Я верю в тебя! 💪",
-		"Каждый день ты становишься лучше! 🌟",
-		"Я горжусь тобой! Продолжай в том же духе! 🎉",
-		"Ты не один, я всегда рядом! 🐾",
-		"Даже маленький шаг — это прогресс! 👣",
-		"Ты сильнее, чем думаешь! 💖",
-		"Сегодня будет отличный день! ✨",
-	}
+// Разные сообщения поддержки
+messages := []string{
+"Ты справишься! Я верю в тебя! 💪",
+"Каждый день ты становишься лучше! 🌟",
+"Я горжусь тобой! Продолжай в том же духе! 🎉",
+"Ты не один, я всегда рядом! 🐾",
+"Даже маленький шаг — это прогресс! 👣",
+"Ты сильнее, чем думаешь! 💖",
+"Сегодня будет отличный день! ✨",
+}
 
-	// Выбираем случайное сообщение
-	msg := messages[m.pet.PropertyHealth.Value%len(messages)]
-	fmt.Printf("\n🐾 \"%s\"\n", msg)
+msg := messages[m.pet.PropertyHealth.Value%len(messages)]
+fmt.Printf("\n🐾 \"%s\"\n", msg)
 
-	m.pet.PropertyEnergy.Value = m.pet.PropertyEnergy.Value + 10
-	if m.pet.PropertyEnergy.Value > 100 {
-		m.pet.PropertyEnergy.Value = 100
-	}
-	if m.pet.PropertyEnergy.Value < 0 {
-		m.pet.PropertyEnergy.Value = 0
-	}
+m.pet.PropertyEnergy.Value = m.pet.PropertyEnergy.Value - 5
 
-	fmt.Println("\n✨ Энергия питомца +10!")
+if m.pet.PropertyEnergy.Value < 0 {
+m.pet.PropertyEnergy.Value = 0
+}
 
-	m.pet.UpdateMoodByHealth()
-	m.save()
+fmt.Println("\n💌!")
+fmt.Printf("⚡ Энергия (теперь: %d/100)\n", m.pet.PropertyEnergy.Value)
+
+// Настроение пользователя улучшается
+m.pet.Mood.SetMood(model.MoodHappy)
+
+m.pet.UpdateMoodByHealth()
+m.save()
 }
 func (m *MainMenu) playGame() {
 fmt.Println("\n🎮 ИГРА: КАМЕНЬ-НОЖНИЦЫ-БУМАГА")
@@ -193,7 +203,6 @@ m.pet.Mood.SetMood(model.MoodHappy)
 fmt.Println("\n✨ Победа! Питомец счастлив!")
 fmt.Println("❤️ Здоровье +10")
 fmt.Println("⚡ Энергия +20")
-fmt.Println("😊 Настроение: счастлив!")
 } else if petWon {
 // Победа питомца
 m.pet.PropertyEnergy.Value = m.pet.PropertyEnergy.Value + 10
@@ -226,13 +235,13 @@ m.save()
 }
 func (m *MainMenu) stats() {
 	fmt.Println("\n╔════════════════════════╗")
-	fmt.Println("║       СТАТИСТИКА       ║")
-	fmt.Println("╠════════════════════════╣")
-	fmt.Printf("║ Имя питомца:  %-10s ║\n", m.pet.Name)
-	fmt.Printf("║ Здоровье:     %d/100      ║\n", m.pet.PropertyHealth.Value)
-	fmt.Printf("║ Энергия:      %d/100      ║\n", m.pet.PropertyEnergy.Value)
-	fmt.Printf("║ Настроение:   %s           ║\n", m.pet.Mood.Mood)
-	fmt.Println("╚════════════════════════╝")
+	fmt.Println("  ║       СТАТИСТИКА       ║")
+	fmt.Println("  ╠════════════════════════╣")
+	fmt.Printf("   ║ Имя питомца:  %-10s    ║\n", m.pet.Name)
+	fmt.Printf("   ║ Здоровье:     %d/100   ║\n", m.pet.PropertyHealth.Value)
+	fmt.Printf("   ║ Энергия:      %d/100   ║\n", m.pet.PropertyEnergy.Value)
+	fmt.Printf("   ║ Настроение:   %s       ║\n", m.pet.Mood.Mood)
+	fmt.Println("  ╚════════════════════════╝")
 }
 
 func (m *MainMenu) save() {
@@ -241,7 +250,7 @@ func (m *MainMenu) save() {
 }
 
 func (m *MainMenu) exit() {
-	fmt.Println("\n👋 До свидания!")
+	fmt.Println("\n Удачи!")
 	fmt.Println("🐾 Не забывай заботиться о себе и своём питомце!")
 	m.save()
 	os.Exit(0)
