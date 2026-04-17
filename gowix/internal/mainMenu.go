@@ -175,7 +175,55 @@ func (m *MainMenu) support() {
 	m.pet.UpdateMoodByHealth()
 	m.save()
 }
+func (m *MainMenu) playGame() {
+fmt.Println("\n🎮 ИГРА: КАМЕНЬ-НОЖНИЦЫ-БУМАГА")
 
+result, userWon, petWon := PlayRPS()
+
+if result == "ошибка" {
+return
+}
+
+// Обновляем состояние питомца в зависимости от результата
+if userWon {
+// Победа пользователя
+m.pet.PropertyEnergy.Value = m.pet.PropertyEnergy.Value + 20
+m.pet.PropertyHealth.Value = m.pet.PropertyHealth.Value + 10
+m.pet.Mood.SetMood(model.MoodHappy)
+fmt.Println("\n✨ Победа! Питомец счастлив!")
+fmt.Println("❤️ Здоровье +10")
+fmt.Println("⚡ Энергия +20")
+fmt.Println("😊 Настроение: счастлив!")
+} else if petWon {
+// Победа питомца
+m.pet.PropertyEnergy.Value = m.pet.PropertyEnergy.Value + 10
+fmt.Println("\n🐾 Питомец победил, но он доволен игрой!")
+fmt.Println("⚡ Энергия +10")
+} else {
+// Ничья
+m.pet.PropertyEnergy.Value = m.pet.PropertyEnergy.Value + 15
+m.pet.PropertyHealth.Value = m.pet.PropertyHealth.Value + 5
+fmt.Println("\n🎮 Ничья! Хорошая игра!")
+fmt.Println("❤️ Здоровье +5")
+fmt.Println("⚡ Энергия +15")
+}
+
+if m.pet.PropertyEnergy.Value > 100 {
+m.pet.PropertyEnergy.Value = 100
+}
+if m.pet.PropertyHealth.Value > 100 {
+m.pet.PropertyHealth.Value = 100
+}
+if m.pet.PropertyHealth.Value < 0 {
+m.pet.PropertyHealth.Value = 0
+}
+if m.pet.PropertyEnergy.Value < 0 {
+m.pet.PropertyEnergy.Value = 0
+}
+
+m.pet.UpdateMoodByHealth()
+m.save()
+}
 func (m *MainMenu) stats() {
 	fmt.Println("\n╔════════════════════════╗")
 	fmt.Println("║       СТАТИСТИКА       ║")
