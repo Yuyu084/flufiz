@@ -71,6 +71,38 @@ func UpdatePetEnergy(petName string, newEnergyValue int, filePath string) error 
 	}
 	return fmt.Errorf("питомец с именем %s не найден", petName)
 }
+func AutoUpdateSleepiness(petName string, filePath string) error {
+pets, err := loadPetsFromFile(filePath)
+if err != nil {
+return err
+}
+
+for i, existPet := range pets.Pets {
+if existPet.Name == petName {
+// Если никогда не играли
+if existPet.LastPlayed.IsZero() {
+pets.Pets[i].LastPlayed = time.Now()
+pets.Pets[i].PropertyEnergy.Value = 100
+return UpdatePetInfo(pets, filePath)
+}
+
+hoursPassed := time.Since(existPet.LastPlayed).Hours()
+
+if hoursPassed > 0 {
+energyLoss := int(hoursPassed) * 5
+newEnergy := existPet.PropertyEnergy.Value - energyLoss
+if newEnergy < 0 {
+newEnergy = 0
+}
+pets.Pets[i].PropertyEnergy.Value = newEnergy
+pets.Pets[i].LastPlayed = time.Now()
+}
+
+return UpdatePetInfo(pets, filePath)
+}
+}
+return nil
+}
 func AutoUpdatePetStats(petName string, filePath string) error {
 	pets, err := loadPetsFromFile(filePath)
 	if err != nil {
